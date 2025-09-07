@@ -9,7 +9,7 @@ const loadLevelWord = (id) => {
     fetch(url)
         .then(res => res.json())
         .then(data => displayLevelWord(data.data))
-    
+
 }
 
 /**
@@ -24,6 +24,19 @@ const loadLevelWord = (id) => {
 const displayLevelWord = (words) => {
     const wordContaienr = document.getElementById('word-container');
     wordContaienr.innerHTML = "";
+
+    if (words.length == 0) {
+        wordContaienr.innerHTML = `
+        <div class="text-center py-10 col-span-3">
+        <span class= "text-gray-500 text-8xl pt-10"><i class="fa-solid fa-bug"></i></span>
+        <p class="  font-bangla text-gray-500 pt-10 ">এই Lesson এ এখনো কোন Vocabulary যুক্ত করা হয়নি।</p>
+
+    
+          <h2 class="text-2xl  font-bangla text-gray-500 font-semibold ">নেক্সট Lesson এ যান</h2>
+        </div>
+        `
+        return;
+    }
 
     words.forEach(word => {
         const card = document.createElement('div');
@@ -40,9 +53,9 @@ const displayLevelWord = (words) => {
         </div>
         `
         wordContaienr.appendChild(card)
-        
+
     })
-    
+
 }
 
 const displayLesson = (lessons) => {
@@ -52,21 +65,21 @@ const displayLesson = (lessons) => {
 
     // 2 get into every lessons
     for (let lesson of lessons) {
-      // 3 Create element 
+        // 3 Create element 
         const btnDiv = document.createElement('div');
         btnDiv.innerHTML = `
         <button onclick= "loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary">
         <i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>
         `;
-    
+
         // 4 append into container
-        levelContainer.append(btnDiv)  
-    
+        levelContainer.append(btnDiv)
+
 
     }
 
-    
-    
+
+
 }
 
 loadLessons();

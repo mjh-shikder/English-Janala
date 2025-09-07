@@ -1,3 +1,9 @@
+const createElement = (arr) => {
+    const htmlElements = arr.map((el) => `<span class = "btn">${el}</span>`);
+    return (htmlElements.join(""));
+    
+}
+
 const loadLessons = () => {
     fetch("https://openapi.programming-hero.com/api/levels/all") // return promise of response
         .then(res => res.json()) // Promise of json data
@@ -23,6 +29,55 @@ const loadLevelWord = (id) => {
             displayLevelWord(data.data)
         })
 
+}
+
+const loadWordDetail = async (id) => {
+    const url = `https://openapi.programming-hero.com/api/word/${id}`
+    // console.log(url);
+    const res = await fetch(url);
+    const details = await res.json();
+    displayWordDetails(details.data);
+    
+}
+
+/*
+"data": {
+"word": "Eager",
+"meaning": "আগ্রহী",
+"pronunciation": "ইগার",
+"level": 1,
+"sentence": "The kids were eager to open their gifts.",
+"points": 1,
+"partsOfSpeech": "adjective",
+"synonyms": [
+"enthusiastic",
+"excited",
+"keen"
+],
+"id": 5
+*/
+const displayWordDetails = (word) => {
+    console.log(word);
+    const detailsBox = document.getElementById('details-container')
+    detailsBox.innerHTML = `
+    <div>
+        <h2 class="text-2xl font-bold ">${word.word} (<i class="fa-solid fa-microphone-lines"></i>: ${word.pronunciation})</h2>
+      </div>
+      <div>
+        <h2 class="font-bold ">Meaning</h2>
+        <p class="font-bangla">${word.meaning}</p>
+      </div>
+      <div>
+        <h2 class="font-bold ">Example</h2>
+        <p>${word.sentence}</p>
+      </div>
+      <div>
+        <h2 class="font-bold ">Synonym</h2>
+        <div>${createElement(word.synonyms)} </div>
+      </div>
+    `
+    document.getElementById('word_modal').showModal()
+    
 }
 
 /**
@@ -60,7 +115,7 @@ const displayLevelWord = (words) => {
 
          <div class="font-bangla text-2xl font-medium text-gray-600">"${word.meaning ? word.meaning : "Meaning not added Yet" } / ${word.pronunciation ? word.pronunciation: "pronunciation not found"}"</div>
          <div class="flex justify-between items-center">
-          <button class="btn bg-[#e9f4ff10] hover:bg-[#e9f4ff]"><i class="fa-solid fa-circle-info text-gray-600"></i></button>
+          <button onclick="loadWordDetail(${word.id})" class="btn bg-[#e9f4ff10] hover:bg-[#e9f4ff]"><i class="fa-solid fa-circle-info text-gray-600"></i></button>
           <button class="btn bg-[#e9f4ff10] hover:bg-[#e9f4ff]"><i class="fa-solid fa-volume-low text-gray-600"></i></button>
          </div>
         </div>

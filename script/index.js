@@ -3,6 +3,12 @@ const createElement = (arr) => {
     return (htmlElements.join("")); 
 }
 
+function pronounceWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-EN"; // English
+  window.speechSynthesis.speak(utterance);
+}
+
 const manageSpinner = (status) => {
     if (status == true) {
         document.getElementById('spinner').classList.remove('hidden');
@@ -129,7 +135,7 @@ const displayLevelWord = (words) => {
          <div class="font-bangla text-2xl font-medium text-gray-600">"${word.meaning ? word.meaning : "Meaning not added Yet" } / ${word.pronunciation ? word.pronunciation: "pronunciation not found"}"</div>
          <div class="flex justify-between items-center">
           <button onclick="loadWordDetail(${word.id})" class="btn bg-[#e9f4ff10] hover:bg-[#e9f4ff]"><i class="fa-solid fa-circle-info text-gray-600"></i></button>
-          <button class="btn bg-[#e9f4ff10] hover:bg-[#e9f4ff]"><i class="fa-solid fa-volume-low text-gray-600"></i></button>
+          <button onclick="pronounceWord('${word.word}')" class="btn bg-[#e9f4ff10] hover:bg-[#e9f4ff]"><i class="fa-solid fa-volume-low text-gray-600"></i></button>
          </div>
         </div>
         `
@@ -166,3 +172,19 @@ const displayLesson = (lessons) => {
 }
 
 loadLessons();
+
+document.getElementById('btn-search').addEventListener('click', () => {
+    removeActive();
+    const input = document.getElementById('input-search')
+    const searchValue = input.value.trim().toLowerCase();
+
+    fetch("https://openapi.programming-hero.com/api/words/all")
+        .then(res => res.json())
+        .then((data) => {
+            const allWords = data.data;
+            console.log(allWords);
+            const filterWords = allWords.filter(word => word.word.toLowerCase().includes(searchValue));
+            displayLevelWord(filterWords)
+            
+        })
+})
